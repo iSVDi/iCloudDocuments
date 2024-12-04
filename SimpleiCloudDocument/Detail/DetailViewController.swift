@@ -186,3 +186,348 @@ extension DetailViewController {
         }
     }
 }
+
+//MARK: - ImagePicker
+/*
+Abstract:
+The extension of DetailViewController that implements UIImagePickerControllerDelegate.
+*/
+
+extension DetailViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+    // UIKit calls this method when the user finishes picking an item with UIImagePickerController.
+    // image.jpegData may fail for unsupported image formats. This sample doesn't
+    // handle unsupported formats because that isn't the focus.
+    //
+    func imagePickerController(_ picker: UIImagePickerController,
+                               didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey: Any]) {
+        guard let image = info[.originalImage] as? UIImage, let imageData = image.jpegData(compressionQuality: 1),
+            let imageURL = info[.imageURL] as? URL else {
+                print("Failed to get JPG data and URL of the picked image.")
+                return
+        }
+        
+        // Save the full image to the cache folder. The image name from Photo Library should be unique,
+        // so this sample doesn’t need to create a unique name for it.
+        //
+        let imageName = imageURL.lastPathComponent
+        let cacheURL = cacheFolder.appendingPathComponent(imageName)
+        do {
+            try imageData.write(to: cacheURL, options: .atomic)
+        } catch {
+            print("Failed to save an image file: \(cacheURL)")
+        }
+        
+        // Update document and collectionView, then dismiss the image picker.
+        //
+        var snapshot = diffableImageSource.snapshot()
+        snapshot.insertItems([ImageItem(name: imageName, thumbnail: imageData.thumbnail())], beforeItem: plusCircelItem)
+        diffableImageSource.apply(snapshot)
+        
+        document?.addUnsavedNewImageURL(cacheURL)
+        dismiss(animated: true)
+    }
+    
+    // UIKit calls the UIImagePickerControllerDelegate method when the user taps the cancel button in UIImagePickerController.
+    //
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+        dismiss(animated: true)
+    }
+}
+
+
+//MARK: - CollectionView
+/*
+ Abstract:
+ The extension of DetailViewController that manages the collection view.
+ */
+
+extension DetailViewController {
+    // If the user is editing and tapping the last cell, present an image picker.
+    // Otherwise, present the full image.
+    // In the latter case, try to load the image in the document bundle first, then check the cache
+    // if the image doesn't exist in the document bundle.
+    //
+    override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        collectionView.deselectItem(at: indexPath, animated: true)
+        
+        if isEditing && indexPath.item == collectionView.numberOfItems(inSection: 0) - 1 {
+            presentImagePicker()
+        } else if let imageItem = diffableImageSource.itemIdentifier(for: indexPath) {
+            retrieveAndPresentImage(with: imageItem.name)
+        }
+    }
+    
+    private func retrieveAndPresentImage(with imageName: String) {
+        document?.retrieveImageAsynchronously(with: imageName) { image in
+            DispatchQueue.main.async {
+                if let image = image {
+                    self.presentImageViewController(image: image)
+                    return
+                }
+                let imageURL = self.cacheFolder.appendingPathComponent(imageName)
+                guard let image = UIImage(contentsOfFile: imageURL.path) else { return }
+                self.presentImageViewController(image: image)
+            }
+        }
+    }
+    
+    private func presentImagePicker() {
+        let imagePicker = UIImagePickerController()
+        imagePicker.delegate = self
+        imagePicker.allowsEditing = false
+        imagePicker.sourceType = .photoLibrary
+        present(imagePicker, animated: true)
+    }
+    
+    private func presentImageViewController(image: UIImage) {
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        let viewController = storyboard.instantiateViewController(withIdentifier: "FullImageNC")
+        guard let navController = viewController as? UINavigationController,
+              let imageViewController = navController.topViewController as? ImageViewController else {
+                return
+        }
+        imageViewController.fullImage = image
+        present(navController, animated: true)
+    }
+}
+
+extension DetailViewController: ImagCVCellDelegate {
+    func deleteCell(_ cell: UICollectionViewCell) {
+        guard let indexPath = collectionView.indexPath(for: cell),
+              let imageItem = diffableImageSource.itemIdentifier(for: indexPath) else {
+            return
+        }
+
+        // If the user added a deleted item in this edit session, remove it from unsavedNewImageURLs.
+        // Otherwise, record the deletion.
+        //
+        let firstIndex = document?.unsavedNewImageURLs.firstIndex {
+            $0.lastPathComponent == imageItem.name
+        }
+        if let index = firstIndex {
+            document?.removeUnsavedNewImageURL(at: index)
+        } else {
+            document?.addUnsavedDeletedImageName(imageItem.name)
+        }
+        // Update the collectionView.
+        //
+        var snapshot = diffableImageSource.snapshot()
+        snapshot.deleteItems([imageItem])
+        diffableImageSource.apply(snapshot)
+    }
+}
+
+//MARK: DocumentState
+/*
+ Abstract:
+ The extension of DetailViewController that manages the document state changes.
+ */
+
+extension DetailViewController {
+    @objc
+    func documentStateChanged(_ notification: Notification) {
+        guard let document = document else { return }
+        printDocumentState(for: document)
+        
+        // The document state is normal.
+        // Update the UI with unpresented peer changes, if any.
+        //
+        if document.documentState == .normal {
+            navigationItem.rightBarButtonItem?.isEnabled = true
+            handleConflictsItem.isEnabled = false
+            if !document.unpresentedPeerChanges.isEmpty {
+                let changes = document.unpresentedPeerChanges
+                document.clearUnpresentedPeerChanges()
+                updateCollectionView(with: changes)
+            }
+            return
+        }
+        // The document has conflicts but no error.
+        // Update the UI with unpresented peer changes if any.
+        //
+        if document.documentState == .inConflict {
+            navigationItem.rightBarButtonItem?.isEnabled = true
+            handleConflictsItem.isEnabled = true
+            if !document.unpresentedPeerChanges.isEmpty {
+                let changes = document.unpresentedPeerChanges
+                document.clearUnpresentedPeerChanges()
+                updateCollectionView(with: changes)
+            }
+            return
+        }
+        // The document is in a closed state with no error. Clear the UI.
+        //
+        if document.documentState == .closed {
+            navigationItem.rightBarButtonItem?.isEnabled = false
+            handleConflictsItem.isEnabled = false
+            title = ""
+            var snapshot = DiffableImageSourceSnapshot()
+            snapshot.appendSections([0])
+            diffableImageSource.apply(snapshot)
+            return
+        }
+        // The document has conflicts. Enable the toolbar item.
+        //
+        if document.documentState.contains(.inConflict) {
+            handleConflictsItem.isEnabled = true
+        }
+        // The document is editingDisabled. Disable the UI for editing.
+        //
+        if document.documentState.contains(.editingDisabled) {
+            navigationItem.rightBarButtonItem?.isEnabled = false
+            handleConflictsItem.isEnabled = false
+        }
+    }
+    
+    private func updateCollectionView(with changes: Document.Changes) {
+        guard let document = document else { return }
+        
+        if !changes.deletedImageNames.isEmpty {
+            let deletedItems = changes.deletedImageNames.map { ImageItem(name: $0, thumbnail: nil) }
+            var snapshot = self.diffableImageSource.snapshot()
+            snapshot.deleteItems(deletedItems)
+            self.diffableImageSource.apply(snapshot)
+        }
+        if !changes.updatedImageNames.isEmpty {
+            document.createImageItemsAsynchronously(with: changes.updatedImageNames) { updatedItems in
+                guard let updatedItems = updatedItems else { return }
+                DispatchQueue.main.async {
+                    var snapshot = self.diffableImageSource.snapshot()
+                    snapshot.reloadItems(updatedItems)
+                    self.diffableImageSource.apply(snapshot)
+                }
+            }
+        }
+        if !changes.newImageURLs.isEmpty {
+            let newImageNames = changes.newImageURLs.map { $0.lastPathComponent }
+            document.createImageItemsAsynchronously(with: newImageNames) { newItems in
+                guard let newItems = newItems else { return }
+                DispatchQueue.main.async {
+                    var snapshot = self.diffableImageSource.snapshot()
+                    snapshot.appendItems(newItems)
+                    self.diffableImageSource.apply(snapshot)
+                }
+            }
+        }
+    }
+    
+    private func printDocumentState(for document: Document) {
+        if document.documentState == .normal {
+            print("documentState: [normal]" )
+            return
+        }
+        var readableStrings = [String]()
+        if document.documentState.contains(.inConflict) {
+            readableStrings.append("inConflict")
+        }
+        if document.documentState.contains(.editingDisabled) {
+            readableStrings.append("editingDisabled")
+        }
+        if document.documentState.contains(.progressAvailable) {
+            readableStrings.append("progressAvailable")
+        }
+        if document.documentState.contains(.savingError) {
+            readableStrings.append("savingError")
+        }
+        if document.documentState.contains(.closed) {
+            readableStrings.append("closed")
+        }
+        print("documentState: \(readableStrings)")
+    }
+}
+
+//MARK: Conflicts
+/*
+Abstract:
+The extension of DetailViewController that handles document conflicts.
+*/
+
+extension DetailViewController {
+    // This is the action handler of the Conflicts button. Resolve the conflicts and update the UI.
+    // For demo purpose, this sample simply makes the latest version the winner.
+    // Real-world apps may consider a more sophisticated strategy.
+    // See the following link for more discussion:
+    // <https://developer.apple.com/documentation/uikit/uidocument#1658506>
+    //
+    @IBAction func handleConflicts(_ sender: Any) {
+        guard let document = document, document.documentState.contains(.inConflict) else {
+            handleConflictsItem.isEnabled = false
+            return
+        }
+        
+        let revertDocument: (Bool) -> Void = { shouldRevert in
+            let message = "The lastest version won. The other versions were removed."
+            let alert = UIAlertController(title: "Conflicts Resolved",
+                                          message: message,
+                                          preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "OK", style: .default))
+
+            guard shouldRevert else {
+                self.present(alert, animated: true)
+                return
+            }
+            
+            self.spinner.startAnimating()
+            document.revert(toContentsOf: document.fileURL) {_ in
+                self.spinner.stopAnimating()
+                self.present(alert, animated: true)
+            }
+        }
+        
+        spinner.startAnimating()
+        resolveConflictsAsynchronously(document: document) { shouldRevert in
+            DispatchQueue.main.async {
+                self.spinner.stopAnimating()
+                revertDocument(shouldRevert)
+            }
+        }
+    }
+
+    // Resolve conflicts asynchronously because coordinated writing may take a long time.
+    // Version information is a kind of document metadata, which needs coordinated access in the iCloud environment.
+    // The completion handler runs in a secondary queue, so clients should dispatch their code appropriately.
+    //
+    private func resolveConflictsAsynchronously(document: Document, completionHandler: ((Bool) -> Void)?) {
+        DispatchQueue.global().async {
+            NSFileCoordinator().coordinate(writingItemAt: document.fileURL,
+                                           options: .contentIndependentMetadataOnly, error: nil) { newURL in
+                let shouldRevert = self.pickLatestVersion(for: newURL)
+                completionHandler?(shouldRevert)
+            }
+        }
+    }
+
+    // Make the latest version current and remove the others.
+    //
+    private func pickLatestVersion(for documentURL: URL) -> Bool {
+        guard let versionsInConflict = NSFileVersion.unresolvedConflictVersionsOfItem(at: documentURL),
+              let currentVersion = NSFileVersion.currentVersionOfItem(at: documentURL) else {
+            return false
+        }
+        var shouldRevert = false
+        var winner = currentVersion
+        for version in versionsInConflict {
+            if let date1 = version.modificationDate, let date2 = winner.modificationDate,
+               date1 > date2 {
+                winner = version
+            }
+        }
+        if winner != currentVersion {
+            do {
+                try winner.replaceItem(at: documentURL)
+                shouldRevert = true
+            } catch {
+                print("Failed to replace version: \(error)")
+            }
+        }
+        do {
+            try NSFileVersion.removeOtherVersionsOfItem(at: documentURL)
+        } catch {
+            print("Failed to remove other versions: \(error)")
+        }
+        return shouldRevert
+    }
+}
+
+
+

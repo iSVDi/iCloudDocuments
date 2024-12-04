@@ -185,3 +185,171 @@ extension MainViewController {
     }
 }
 
+
+// MARK: TABlE VIEW EXTENSION
+//Abstract:
+//The extension of MainViewController that implements UITableViewDelegate.
+
+extension MainViewController {
+    // Override to support deleting a table view item by swiping left.
+    // There is no need to apply a new snapshot because deleting a document (removeDocument) triggers NSMetadataQueryDidUpdate,
+    // and the update event handler updates the table view.
+    //
+    override func tableView(_ tableView: UITableView,
+                            trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        let deleteAction = UIContextualAction(style: .destructive, title: "") { (_, _, completionHandler) in
+            if let metadataItem = self.diffableMetadataSource.itemIdentifier(for: indexPath) {
+                self.removeDocument(at: metadataItem.url)
+            }
+            completionHandler(true)
+        }
+        deleteAction.image = UIImage(systemName: "trash.fill")
+        return UISwipeActionsConfiguration(actions: [deleteAction])
+    }
+    
+    // Override willSelectRowAt to prevent the tableView from switching selection when
+    // the detail view controller is editing.
+    //
+    override func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
+        // If the target indexPath is currently selected, quietly return.
+        //
+        if let targetIndexPath = tableView.indexPathForSelectedRow, targetIndexPath == indexPath {
+            return nil
+        }
+        
+        // If the detail view controller isn't editing, allows the selection switching.
+        // Otherwise, alert the user and return nil to prevent the switching.
+        //
+        guard let detailViewController = detailViewController(), detailViewController.isEditing else {
+            return indexPath
+        }
+        
+        let newAlert = UIAlertController(title: "Warning",
+                                         message: "Please finish your current edit session before loading a new document.",
+                                         preferredStyle: .alert)
+        newAlert.addAction(UIAlertAction(title: "OK", style: .default))
+        present(newAlert, animated: true)
+        return nil
+    }
+    
+    // Find and return the detail view controller via splitViewController if there is one.
+    //
+    private func detailViewController() -> DetailViewController? {
+        guard let splitViewController = splitViewController, !splitViewController.isCollapsed else {
+            return nil
+        }
+        let count = splitViewController.viewControllers.count
+        let navigationController = splitViewController.viewControllers[count - 1] as? UINavigationController
+        let topViewController = navigationController?.topViewController as? UINavigationController
+        let detailNavigationController = topViewController ?? navigationController
+
+        return detailNavigationController?.topViewController as? DetailViewController
+    }
+}
+
+
+//MARK: Documents extension
+//Abstract:
+//The extension of MainViewController that provides interfaces for opening, creating, and removing a document.
+extension MainViewController {
+    // An enumeration that presents the scopes of an iCloud container.
+    // .documents: Points to the Documents folder in an iCloud container.
+    // .data: Points to the Data folder an iCloud container.
+    // Documents in the .documents scope behave differently from the other scopes in that
+    // they appear in iCloud Drive if the app publishes the iCloud container, and in
+    // Settings > Apple ID > iCloud > Manage Storage > SimpleiCloudDocument.
+    //
+    enum Scope: String {
+        case documents = "Documents"
+        case data = "Data"
+    }
+    
+    // Checks if fileURL is in the .documents scope and returns true if yes.
+    //
+    func isDocumentScopeURL(_ fileURL: URL) -> Bool {
+        guard let rootURL = metadataProvider?.containerRootURL else { return false }
+        
+        let documentsFolderPath = rootURL.appendingPathComponent(Scope.documents.rawValue).path
+        return fileURL.path.hasPrefix(documentsFolderPath)
+    }
+
+    // Creates and returns a URL from the specified filename and scope.
+    // Use "Untitled" if the filename is empty.
+    //
+    private func url(for fileName: String, scope: Scope) -> URL? {
+        guard let rootURL = metadataProvider?.containerRootURL else { return nil }
+        
+        var url = rootURL.appendingPathComponent(scope.rawValue)
+        let name = fileName.isEmpty ? "Untitled" : fileName
+        url = url.appendingPathComponent(name, isDirectory: false)
+        url = url.appendingPathExtension(Document.extensionName)
+        return url
+    }
+
+    // Create a new document by calling save(to:for:completionHandler:) with .forCreating.
+    // Create the intermediate directories if they don't exist.
+    // Close the document after successfully creating it to avoid blocking other operations.
+    //
+    func createDocument(with fileName: String, scope: Scope, content: String, completionHandler: ((Bool) -> Void)?) {
+        guard let fileURL = url(for: fileName, scope: scope) else {
+            completionHandler?(false)
+            return
+        }
+        
+        do {
+            let folderPath = fileURL.deletingLastPathComponent().path
+            try FileManager.default.createDirectory(atPath: folderPath, withIntermediateDirectories: true, attributes: nil)
+        } catch let error as NSError {
+            print(error.localizedDescription)
+            completionHandler?(false)
+            return
+        }
+        
+        // save(to:for:completionHandler:) keeps the document open, so close the document after the saving finishes.
+        // Keeping the document open prevents (blocks) others from coordinated writing it.
+        //
+        // Ignore the document saving error here because
+        // Document's handleError method should have handled the document reading or saving error, if necessary.
+        //
+        let document = Document(fileURL: fileURL)
+        document.save(to: fileURL, for: .forCreating) { _ in
+            document.close { success in
+                if !success {
+                    print("Failed to close the document: \(fileURL)")
+                }
+                completionHandler?(success)
+            }
+        }
+    }
+    
+    // Remove a document.
+    //
+    func removeDocument(at fileURL: URL) {
+        DispatchQueue.global().async {
+            NSFileCoordinator().coordinate(writingItemAt: fileURL, options: .forDeleting, error: nil) { newURL in
+                do {
+                    try FileManager.default.removeItem(atPath: newURL.path)
+                } catch let error as NSError {
+                    print(error.localizedDescription)
+                }
+            }
+        }
+    }
+    
+    // Open a document in place.
+    // If the passed-in URL is already in the data source, select the item and open it.
+    // Otherwise, deselect the table view and open the URL directly in the detail view controller.
+    //
+    func openDocumentInPlace(url: URL) {
+        if let indexPath = diffableMetadataSource.indexPath(for: MetadataItem(nsMetadataItem: nil, url: url)) {
+            tableView.selectRow(at: indexPath, animated: true, scrollPosition: .middle)
+            performSegue(withIdentifier: SegueID.showDetail, sender: self)
+            return
+        }
+        
+        if let indexPath = tableView.indexPathForSelectedRow {
+            tableView.deselectRow(at: indexPath, animated: true)
+        }
+        performSegue(withIdentifier: SegueID.showDetail, sender: url)
+    }
+}

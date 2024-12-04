@@ -1,9 +1,9 @@
 /*
-See LICENSE folder for this sample’s licensing information.
-
-Abstract:
-The document class that implements UIDocument's reading and writing methods, and manages document changes.
-*/
+ See LICENSE folder for this sample’s licensing information.
+ 
+ Abstract:
+ The document class that implements UIDocument's reading and writing methods, and manages document changes.
+ */
 
 import UIKit
 
@@ -41,7 +41,7 @@ class Document: UIDocument {
     //
     private var _fileWrappersUnderRoot: [String: FileWrapper]?
     private var _unsavedUserChanges = Changes()
-
+    
     // This sample only accesses unpresentedPeerChanges from the main queue.
     //
     private(set) var unpresentedPeerChanges = Changes()
@@ -104,7 +104,7 @@ extension Document {
         }
         super.save(to: url, for: saveOperation, completionHandler: completionHandler)
     }
-
+    
     // UIDocument calls this method to revert the document to the most recent document data
     // on-disk after synchronizing peer changes.
     // Print this call to reveal the process.
@@ -187,14 +187,14 @@ extension Document {
             changes.newImageURLs = Array(imageWrappers.keys).map { URL(string: $0)! }
             return changes
         }
-
+        
         // If imageWrappers is empty, put all the keys of the original image wrappers to deletedImageNames.
         //
         changes.deletedImageNames = Array(originalImageWrappers.keys)
         guard !imageWrappers.isEmpty else {
             return changes
         }
-
+        
         // Check the modificationDate for updated images.
         // If the date doesn't change, the content doesn't change, so there is no need to update the UI.
         // If an image doesn't exist in originalImageWrappers, gather it as a new one.
@@ -240,7 +240,7 @@ extension Document {
             }
         }
     }
-
+    
     // This is a public method for generating thumbnails for the specified image names.
     // Instead of generating thumbnails and keeping the image data in the UIDocument loading method,
     // this method doesn't keep the image data, so it better controls the memory footprint.
@@ -261,7 +261,7 @@ extension Document {
     //
     private func imageItems(with imageNames: [String]? = nil) -> [ImageItem]? {
         guard let imageWrappers = fileWrappersUnderRoot else { return nil }
-
+        
         var items = [ImageItem]()
         let names = imageNames ?? Array(imageWrappers.keys)
         

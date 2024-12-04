@@ -10,9 +10,6 @@
 		402023BF25B55F6D00EE409F /* ImageCVCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 402023BE25B55F6D00EE409F /* ImageCVCell.swift */; };
 		4035D47F25B5BDF700FDD250 /* ImageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4035D47E25B5BDF700FDD250 /* ImageViewController.swift */; };
 		4035D48325B5FBBD00FDD250 /* DiffableImageSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4035D48225B5FBBD00FDD250 /* DiffableImageSource.swift */; };
-		4035D48C25B6743D00FDD250 /* DetailViewController+DocumentState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4035D48B25B6743C00FDD250 /* DetailViewController+DocumentState.swift */; };
-		4035D48F25B6747100FDD250 /* DetailViewController+CollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4035D48E25B6747100FDD250 /* DetailViewController+CollectionView.swift */; };
-		4035D49325B67B8700FDD250 /* DetailViewController+ImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4035D49225B67B8700FDD250 /* DetailViewController+ImagePicker.swift */; };
 		4035D49625B67BB900FDD250 /* Data+SCD.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4035D49525B67BB900FDD250 /* Data+SCD.swift */; };
 		4035D49B25B7895900FDD250 /* ImageItemsFlowLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4035D49A25B7895900FDD250 /* ImageItemsFlowLayout.swift */; };
 		4044A2C225AF6914006AE04A /* DiffableMetadataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4044A2C125AF6914006AE04A /* DiffableMetadataSource.swift */; };
@@ -24,9 +21,6 @@
 		4072519E25ABABD600889865 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4072519B25ABABD600889865 /* MainViewController.swift */; };
 		407251A025ABABD600889865 /* DetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4072519D25ABABD600889865 /* DetailViewController.swift */; };
 		407251A825ABABE000889865 /* Document.swift in Sources */ = {isa = PBXBuildFile; fileRef = 407251A425ABABE000889865 /* Document.swift */; };
-		40934F0325BA4D060078AD1B /* MainViewController+TableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40934F0225BA4D060078AD1B /* MainViewController+TableView.swift */; };
-		40934F0625BA4D7A0078AD1B /* MainViewController+Document.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40934F0525BA4D7A0078AD1B /* MainViewController+Document.swift */; };
-		40C0520C25C24A0400BB3DC7 /* DetailViewController+Conflict.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40C0520B25C24A0400BB3DC7 /* DetailViewController+Conflict.swift */; };
 		40E6CEAE25ACCF860034AC69 /* MetadataProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40E6CEAD25ACCF860034AC69 /* MetadataProvider.swift */; };
 /* End PBXBuildFile section */
 
@@ -34,9 +28,6 @@
 		402023BE25B55F6D00EE409F /* ImageCVCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageCVCell.swift; sourceTree = "<group>"; };
 		4035D47E25B5BDF700FDD250 /* ImageViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageViewController.swift; sourceTree = "<group>"; };
 		4035D48225B5FBBD00FDD250 /* DiffableImageSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiffableImageSource.swift; sourceTree = "<group>"; };
-		4035D48B25B6743C00FDD250 /* DetailViewController+DocumentState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DetailViewController+DocumentState.swift"; sourceTree = "<group>"; };
-		4035D48E25B6747100FDD250 /* DetailViewController+CollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DetailViewController+CollectionView.swift"; sourceTree = "<group>"; };
-		4035D49225B67B8700FDD250 /* DetailViewController+ImagePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DetailViewController+ImagePicker.swift"; sourceTree = "<group>"; };
 		4035D49525B67BB900FDD250 /* Data+SCD.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Data+SCD.swift"; sourceTree = "<group>"; };
 		4035D49A25B7895900FDD250 /* ImageItemsFlowLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageItemsFlowLayout.swift; sourceTree = "<group>"; };
 		4044A2C125AF6914006AE04A /* DiffableMetadataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiffableMetadataSource.swift; sourceTree = "<group>"; };
@@ -52,9 +43,6 @@
 		4072519B25ABABD600889865 /* MainViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
 		4072519D25ABABD600889865 /* DetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DetailViewController.swift; sourceTree = "<group>"; };
 		407251A425ABABE000889865 /* Document.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Document.swift; sourceTree = "<group>"; };
-		40934F0225BA4D060078AD1B /* MainViewController+TableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MainViewController+TableView.swift"; sourceTree = "<group>"; };
-		40934F0525BA4D7A0078AD1B /* MainViewController+Document.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MainViewController+Document.swift"; sourceTree = "<group>"; };
-		40C0520B25C24A0400BB3DC7 /* DetailViewController+Conflict.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DetailViewController+Conflict.swift"; sourceTree = "<group>"; };
 		40E6CEAD25ACCF860034AC69 /* MetadataProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetadataProvider.swift; sourceTree = "<group>"; };
 		9ED920EBEB82115F181C07D4 /* LICENSE.txt */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = LICENSE.txt; sourceTree = "<group>"; };
 		B0302D59C9E784B296B37DCB /* SampleCode.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = SampleCode.xcconfig; path = Configuration/SampleCode.xcconfig; sourceTree = "<group>"; };
@@ -84,8 +72,6 @@
 			children = (
 				40E6CEAD25ACCF860034AC69 /* MetadataProvider.swift */,
 				4072519B25ABABD600889865 /* MainViewController.swift */,
-				40934F0525BA4D7A0078AD1B /* MainViewController+Document.swift */,
-				40934F0225BA4D060078AD1B /* MainViewController+TableView.swift */,
 				4044A2C125AF6914006AE04A /* DiffableMetadataSource.swift */,
 			);
 			path = Main;
@@ -96,10 +82,6 @@
 			children = (
 				407251A425ABABE000889865 /* Document.swift */,
 				4072519D25ABABD600889865 /* DetailViewController.swift */,
-				4035D49225B67B8700FDD250 /* DetailViewController+ImagePicker.swift */,
-				4035D48E25B6747100FDD250 /* DetailViewController+CollectionView.swift */,
-				4035D48B25B6743C00FDD250 /* DetailViewController+DocumentState.swift */,
-				40C0520B25C24A0400BB3DC7 /* DetailViewController+Conflict.swift */,
 				4035D48225B5FBBD00FDD250 /* DiffableImageSource.swift */,
 				402023BE25B55F6D00EE409F /* ImageCVCell.swift */,
 				4035D49A25B7895900FDD250 /* ImageItemsFlowLayout.swift */,
@@ -224,20 +206,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				4035D49B25B7895900FDD250 /* ImageItemsFlowLayout.swift in Sources */,
-				4035D48C25B6743D00FDD250 /* DetailViewController+DocumentState.swift in Sources */,
 				4072519E25ABABD600889865 /* MainViewController.swift in Sources */,
 				4035D48325B5FBBD00FDD250 /* DiffableImageSource.swift in Sources */,
 				4044A2C225AF6914006AE04A /* DiffableMetadataSource.swift in Sources */,
 				40E6CEAE25ACCF860034AC69 /* MetadataProvider.swift in Sources */,
-				4035D49325B67B8700FDD250 /* DetailViewController+ImagePicker.swift in Sources */,
-				40C0520C25C24A0400BB3DC7 /* DetailViewController+Conflict.swift in Sources */,
 				4035D47F25B5BDF700FDD250 /* ImageViewController.swift in Sources */,
 				4072518325ABA79E00889865 /* AppDelegate.swift in Sources */,
-				4035D48F25B6747100FDD250 /* DetailViewController+CollectionView.swift in Sources */,
 				407251A025ABABD600889865 /* DetailViewController.swift in Sources */,
 				407251A825ABABE000889865 /* Document.swift in Sources */,
-				40934F0325BA4D060078AD1B /* MainViewController+TableView.swift in Sources */,
-				40934F0625BA4D7A0078AD1B /* MainViewController+Document.swift in Sources */,
 				402023BF25B55F6D00EE409F /* ImageCVCell.swift in Sources */,
 				4035D49625B67BB900FDD250 /* Data+SCD.swift in Sources */,
 				4072518525ABA79E00889865 /* SceneDelegate.swift in Sources */,
