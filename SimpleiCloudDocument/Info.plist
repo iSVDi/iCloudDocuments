@@ -43,12 +43,12 @@
 	<true/>
 	<key>NSUbiquitousContainers</key>
 	<dict>
-		<key>iCloud.com.example.trail-treker-backup</key>
+		<key>iCloud.com.example.interesting.Book</key>
 		<dict>
 			<key>NSUbiquitousContainerIsDocumentScopePublic</key>
 			<true/>
 			<key>NSUbiquitousContainerName</key>
-			<string>TrailTrekerBackup</string>
+			<string>HarryPotterBook</string>
 			<key>NSUbiquitousContainerSupportedFolderLevels</key>
 			<string>ANY</string>
 		</dict>
