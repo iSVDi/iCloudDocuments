@@ -18,7 +18,7 @@
 		4072518A25ABA79E00889865 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4072518825ABA79E00889865 /* Main.storyboard */; };
 		4072518C25ABA79F00889865 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4072518B25ABA79F00889865 /* Assets.xcassets */; };
 		4072518F25ABA79F00889865 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4072518D25ABA79F00889865 /* LaunchScreen.storyboard */; };
-		4072519E25ABABD600889865 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4072519B25ABABD600889865 /* MainViewController.swift */; };
+		4072519E25ABABD600889865 /* MainTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4072519B25ABABD600889865 /* MainTableViewController.swift */; };
 		407251A025ABABD600889865 /* DetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4072519D25ABABD600889865 /* DetailViewController.swift */; };
 		407251A825ABABE000889865 /* Document.swift in Sources */ = {isa = PBXBuildFile; fileRef = 407251A425ABABE000889865 /* Document.swift */; };
 		40E6CEAE25ACCF860034AC69 /* MetadataProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40E6CEAD25ACCF860034AC69 /* MetadataProvider.swift */; };
@@ -40,7 +40,7 @@
 		4072518E25ABA79F00889865 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		4072519025ABA79F00889865 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		4072519725ABA7C600889865 /* SimpleiCloudDocument.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SimpleiCloudDocument.entitlements; sourceTree = "<group>"; };
-		4072519B25ABABD600889865 /* MainViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
+		4072519B25ABABD600889865 /* MainTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainTableViewController.swift; sourceTree = "<group>"; };
 		4072519D25ABABD600889865 /* DetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DetailViewController.swift; sourceTree = "<group>"; };
 		407251A425ABABE000889865 /* Document.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Document.swift; sourceTree = "<group>"; };
 		40E6CEAD25ACCF860034AC69 /* MetadataProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetadataProvider.swift; sourceTree = "<group>"; };
@@ -71,7 +71,7 @@
 			isa = PBXGroup;
 			children = (
 				40E6CEAD25ACCF860034AC69 /* MetadataProvider.swift */,
-				4072519B25ABABD600889865 /* MainViewController.swift */,
+				4072519B25ABABD600889865 /* MainTableViewController.swift */,
 				4044A2C125AF6914006AE04A /* DiffableMetadataSource.swift */,
 			);
 			path = Main;
@@ -206,7 +206,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				4035D49B25B7895900FDD250 /* ImageItemsFlowLayout.swift in Sources */,
-				4072519E25ABABD600889865 /* MainViewController.swift in Sources */,
+				4072519E25ABABD600889865 /* MainTableViewController.swift in Sources */,
 				4035D48325B5FBBD00FDD250 /* DiffableImageSource.swift in Sources */,
 				4044A2C225AF6914006AE04A /* DiffableMetadataSource.swift in Sources */,
 				40E6CEAE25ACCF860034AC69 /* MetadataProvider.swift in Sources */,

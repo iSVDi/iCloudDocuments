@@ -7,7 +7,7 @@ The view controller class that manages metadata items in iCloud container.
 
 import UIKit
 
-class MainViewController: UITableViewController {
+class MainTableViewController: UITableViewController {
     struct SegueID {
         static let showDetail = "ShowDetail"
     }
@@ -31,7 +31,7 @@ class MainViewController: UITableViewController {
 
 // MARK: - UIViewController overridable
 //
-extension MainViewController {
+extension MainTableViewController {
     // Set up the navigation and toolbar items, create the metadata provider,
     // and set up the notification observation.
     //
@@ -106,7 +106,7 @@ extension MainViewController {
 
 // MARK: - Actions and notifications
 //
-extension MainViewController {
+extension MainTableViewController {
     // The action handler of the add button.
     // Present an alert controller for users to create a new document.
     //
@@ -188,9 +188,9 @@ extension MainViewController {
 
 // MARK: TABlE VIEW EXTENSION
 //Abstract:
-//The extension of MainViewController that implements UITableViewDelegate.
+//The extension of MainTableViewController that implements UITableViewDelegate.
 
-extension MainViewController {
+extension MainTableViewController {
     // Override to support deleting a table view item by swiping left.
     // There is no need to apply a new snapshot because deleting a document (removeDocument) triggers NSMetadataQueryDidUpdate,
     // and the update event handler updates the table view.
@@ -250,8 +250,8 @@ extension MainViewController {
 
 //MARK: Documents extension
 //Abstract:
-//The extension of MainViewController that provides interfaces for opening, creating, and removing a document.
-extension MainViewController {
+//The extension of MainTableViewController that provides interfaces for opening, creating, and removing a document.
+extension MainTableViewController {
     // An enumeration that presents the scopes of an iCloud container.
     // .documents: Points to the Documents folder in an iCloud container.
     // .data: Points to the Data folder an iCloud container.

@@ -23,7 +23,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
         guard let splitViewController = window?.rootViewController as? UISplitViewController,
               let navigationController = splitViewController.viewControllers.first as? UINavigationController,
-              let mainViewController = navigationController.viewControllers.first as? MainViewController else {
+              let mainViewController = navigationController.viewControllers.first as? MainTableViewController else {
             fatalError("Failed to retrieve the main view controller. Main.storyboard may be corrupted.")
         }
         guard let firstContext = URLContexts.first, firstContext.options.openInPlace else { return }

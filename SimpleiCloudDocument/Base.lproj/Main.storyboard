@@ -2,7 +2,6 @@
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="23504" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="bJw-Aj-mch">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
-        <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="23506"/>
         <capability name="Image references" minToolsVersion="12.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
@@ -14,7 +13,7 @@
         <!--Main-->
         <scene sceneID="k18-Yu-Fm6">
             <objects>
-                <tableViewController title="Main" clearsSelectionOnViewWillAppear="NO" id="jr2-jm-Msv" customClass="MainViewController" customModule="SimpleiCloudDocument" customModuleProvider="target" sceneMemberID="viewController">
+                <tableViewController title="Main" clearsSelectionOnViewWillAppear="NO" id="jr2-jm-Msv" customClass="MainTableViewController" customModule="SimpleiCloudDocument" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="MzJ-qJ-P4m">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
